@@ -1,0 +1,165 @@
+{% extends "layouts/admin-lte.html" %}
+
+<!-- Title -->
+{% block title %}Reserva {{ reservation[0] }}{% endblock %}
+
+<!-- Start Custom CSS Block -->
+{% block css_page %}
+<!-- Start CSS Page -->
+<style>
+    /* */
+</style>
+<link rel="stylesheet" href="">
+<!-- End CSS Page -->
+{% endblock %}
+<!-- End Custom CSS Block -->
+
+<!-- Page Title -->
+{% block page_title %}Reserva {{ reservation[0] }}{% endblock %}
+
+<!-- Navegation Page -->
+{% block page_navigation %}
+<li class="breadcrumb-item active">Reserva {{ reservation[0] }}</li>
+{% endblock %}
+
+<!-- Main Content -->
+{% block main_content %}
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-4">
+                <div class="row justify-content-center align-items-center">
+                    <h3>Equipo A</h3>
+                </div>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Jugador</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for anotationTeamA in anotationsTeamA %}
+                            <tr>
+                                <th scope="row">{{ anotationTeamA[0] }}</th>
+                                <td>{{ anotationTeamA[3] }}</td>
+                                <td>
+                                    <a class="btn btn-danger btn-sm" href="/anotations/delete/{{ anotationTeamA[0] }}">Eliminar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if nA < reservation[2] %}
+                    <form action="/anotations" method="POST" class="row justify-content-center align-items-center">
+                        <input type="hidden" name="team" value="A">
+                        <input type="hidden" name="reservation_id" value="{{ reservation[0] }}">
+                        <div class="mx-1">
+                            <input type="text" name="full_name" class="form-control" placeholder="Nombre...">
+                        </div>
+                        <button class="btn btn-sm btn-success">
+                            Agregar
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="col-4">
+                <div class="row justify-content-center align-items-center">
+                    <h4>
+                        {{ reservation[1] }}
+                    </h4>    
+                </div>
+                <img src="{{ url_for('static', filename='assets/img/bg-img/field.jpg') }}" alt="..." style="width: 100%;">
+            </div>
+            <div class="col-4">
+                <div class="row justify-content-center align-items-center">
+                    <h3>Equipo B</h3>
+                </div>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Jugador</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for anotationTeamB in anotationsTeamB %}
+                            <tr>
+                                <th scope="row">{{ anotationTeamB[0] }}</th>
+                                <td>{{ anotationTeamB[3] }}</td>
+                                <td>
+                                    <a class="btn btn-danger btn-sm" href="/anotations/delete/{{ anotationTeamB[0] }}">Eliminar</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% if nB < reservation[2] %}
+                    <form action="/anotations" method="POST" class="row justify-content-center align-items-center">
+                        <input type="hidden" name="team" value="B">
+                        <input type="hidden" name="reservation_id" value="{{ reservation[0] }}">
+                        <div class="mx-1">
+                            <input type="text" name="full_name" class="form-control" placeholder="Nombre...">
+                        </div>
+                        <button class="btn btn-sm btn-success">
+                            Agregar
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</div>
+{% endblock %}
+
+<!-- Create Modal -->
+{% include "pages/reservations/reservation-modal.html" %}
+
+<!-- Delete Modal -->
+{% include "pages/reservations/delete-modal.html" %}
+
+<!-- Start Custom JS Block -->
+{% block js_page %}
+<!-- Start Page JS -->
+<script>
+    const reservationForm = $('#reservation-form');
+    const reservationFormDelete = $('#delete-form');
+
+    function getReservation(id) {
+        reservationForm.attr('action', '/reservations/update/' + id);
+        $('#reservation-modal-header').attr('class', 'modal-header bg-secondary');
+        $.get('/reservations/' + id, function(data) {
+            $('#field').val(data.field);
+            $('#user').val(data.user);
+            $('#start_at').val(data.start_at);
+            $('#end_at').val(data.end_at);
+        });
+    }
+
+    function deleteReservation(id) {
+        reservationFormDelete.attr('action', '/reservations/delete/' + id)
+    }
+
+    function resetModal() {
+        $('#reservation-modal-header').attr('class', 'modal-header bg-primary');
+        $('#field').val(null);
+        $('#user').val(null);
+        $('#start_at').val(null);
+        $('#end_at').val(null);
+    }
+
+    function resetFormAttributes() {
+        reservationForm.attr('action', '/reservations');
+    }
+
+    function resetreservation() {
+        reservationFormDelete.attr('action', '#');
+    }
+</script>
+<script src=""></script>
+<!-- End Page JS -->
+{% endblock %}
+<!-- Start Custom JS Block -->

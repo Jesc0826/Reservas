@@ -1,0 +1,131 @@
+{% extends "layouts/admin-lte.html" %}
+
+<!-- Title -->
+{% block title %}Reservas{% endblock %}
+
+<!-- Start Custom CSS Block -->
+{% block css_page %}
+<!-- Start CSS Page -->
+<style>
+    /**/
+</style>
+<link rel="stylesheet" href="">
+<!-- End CSS Page -->
+{% endblock %}
+<!-- End Custom CSS Block -->
+
+<!-- Page Title -->
+{% block page_title %}Reservas{% endblock %}
+
+<!-- Navegation Page -->
+{% block page_navigation %}
+<li class="breadcrumb-item active">Reservas</li>
+{% endblock %}
+
+<!-- Main Content -->
+{% block main_content %}
+<div class="content">
+    <div class="container-fluid">
+        <!-- Alerta -->
+        {% if message %}
+        <div class="{{ alertClass }}" role="alert">
+            <strong>Error: </strong> {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-12 d-flex my-3">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#reservation-modal" onclick="resetModal()">Agregar</button>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Cancha</th>
+                                    <th>Inicio</th>
+                                    <th>Fin</th>
+                                    <th colspan="2">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reservation in reservations %}
+                                <tr>
+                                    <td>{{ reservation[1] }}</td>
+                                    <td>{{ reservation[2] }}</td>
+                                    <td>{{ reservation[3] }}</td>
+                                    <td>{{ reservation[4] }}</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="getReservation('{{ reservation[0] }}')" data-toggle="modal" data-target="#reservation-modal">Editar</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteReservation('{{ reservation[0] }}')" data-toggle="modal" data-target="#delete-modal">Eliminar</button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</div>
+{% endblock %}
+
+<!-- Create Modal -->
+{% include "pages/reservations/reservation-modal.html" %}
+
+<!-- Delete Modal -->
+{% include "pages/reservations/delete-modal.html" %}
+
+<!-- Start Custom JS Block -->
+{% block js_page %}
+<!-- Start Page JS -->
+<script>
+    const reservationForm = $('#reservation-form');
+    const reservationFormDelete = $('#delete-form');
+
+    function getReservation(id) {
+        reservationForm.attr('action', '/reservations/update/' + id);
+        $('#reservation-modal-header').attr('class', 'modal-header bg-secondary');
+        $.get('/reservations/' + id, function(data) {
+            $('#field').val(data.field);
+            $('#user').val(data.user);
+            $('#start_at').val(data.start_at);
+            $('#end_at').val(data.end_at);
+        });
+    }
+
+    function deleteReservation(id) {
+        reservationFormDelete.attr('action', '/reservations/delete/' + id)
+    }
+
+    function resetModal() {
+        $('#reservation-modal-header').attr('class', 'modal-header bg-primary');
+        $('#field').val(null);
+        $('#user').val(null);
+        $('#start_at').val(null);
+        $('#end_at').val(null);
+    }
+
+    function resetFormAttributes() {
+        reservationForm.attr('action', '/reservations');
+    }
+
+    function resetreservation() {
+        reservationFormDelete.attr('action', '#');
+    }
+</script>
+<script src=""></script>
+<!-- End Page JS -->
+{% endblock %}
+<!-- Start Custom JS Block -->
